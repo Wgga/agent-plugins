@@ -1,0 +1,21 @@
+{
+  "name": "dev-engineering",
+  "displayName": "Dev Engineering",
+  "version": "1.0.0",
+  "description": "A collection of cross-platform AI agent skills for code review, scientific debugging, security audit, and Taro mini-app generation",
+  "author": {
+    "name": "Dev Skills Team",
+    "url": "https://github.com/dev-skills/agent-plugins"
+  },
+  "homepage": "https://github.com/dev-skills/agent-plugins",
+  "repository": "https://github.com/dev-skills/agent-plugins",
+  "license": "MIT",
+  "keywords": [
+    "code-review",
+    "debugging",
+    "security-audit",
+    "mini-app",
+    "taro",
+    "cross-platform"
+  ]
+}

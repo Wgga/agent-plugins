@@ -1,0 +1,33 @@
+{
+  "name": "dev-engineering",
+  "version": "1.0.0",
+  "description": "A collection of cross-platform AI agent skills for code review, scientific debugging, security audit, and Taro mini-app generation. Compatible with Codex, Claude Code, Cursor, VS Code Copilot, and Trae IDE.",
+  "author": {
+    "name": "Dev Skills Team",
+    "url": "https://github.com/dev-skills/agent-plugins"
+  },
+  "homepage": "https://github.com/dev-skills/agent-plugins",
+  "repository": "https://github.com/dev-skills/agent-plugins",
+  "license": "MIT",
+  "keywords": [
+    "code-review",
+    "debugging",
+    "security",
+    "mini-app",
+    "taro",
+    "codex",
+    "skills"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Dev Engineering",
+    "shortDescription": "Code review, debugging, security audit, and mini-app generation skills for AI agents.",
+    "longDescription": "Use cross-platform AI agent skills for code review, scientific debugging, security audit, and Taro mini-app generation from Codex.",
+    "developerName": "Dev Skills Team",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Skills"
+    ],
+    "websiteURL": "https://github.com/dev-skills/agent-plugins"
+  }
+}

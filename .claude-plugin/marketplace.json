@@ -1,0 +1,22 @@
+{
+  "name": "dev-engineering",
+  "owner": {
+    "name": "Dev Skills Team"
+  },
+  "description": "A collection of cross-platform AI agent skills for code review, scientific debugging, security audit, and Taro mini-app generation",
+  "plugins": [
+    {
+      "name": "dev-engineering",
+      "description": "Cross-platform AI agent skills: code review, scientific debugging, security audit, and Taro mini-app generation. Compatible with Claude Code, Cursor, VS Code Copilot, and Trae IDE.",
+      "category": "development",
+      "tags": [
+        "code-review",
+        "debugging",
+        "security",
+        "mini-app",
+        "taro"
+      ],
+      "source": "./"
+    }
+  ]
+}

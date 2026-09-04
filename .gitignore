@@ -1,0 +1,25 @@
+# Mac
+.DS_Store
+
+# Coverage
+coverage/
+
+# IDE
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Validation output
+validation/
+
+# History (IDE)
+.history/
+
+# Runtime artifacts
+.runtime/
+.logs/
+__pycache__/
+state.json
+CLAUDE.md
+CLAUDE.local.md
