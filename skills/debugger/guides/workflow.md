@@ -56,7 +56,13 @@ Requirements:
 *   Instrumentation code must use semantic tags: `// #region debug-point <hypothesisId>[:description]`.
 *   It is recommended to include a unified log prefix in the `message` field (default `[DEBUG]`).
 
-Output: List of Insertion Points + Expected Signals
+> **🚨 MANDATORY**: At this step, you MUST output the Debug Server start command for the user to run:
+> - **Local**: `python3 tools/debug-server/python/debug-server.py --session <sessionId> --outdir .dbg --clean --idle 1200`
+> - **Mobile/Remote**: `python3 tools/debug-server/python/debug-server.py --remote --session <sessionId> --outdir .dbg --clean --idle 1200`
+> - **USB (iOS)**: Also instruct: `iproxy 7777 7777` (in another terminal)
+> - **USB (Android)**: Also instruct: `adb reverse tcp:7777 tcp:7777`
+
+Output: List of Insertion Points + Expected Signals + Debug Server start command
 
 ---
 
@@ -66,9 +72,13 @@ Output: List of Insertion Points + Expected Signals
 *   **Strictly Prohibit Creating New Util Files**: Use inline one-liners or reuse existing capabilities.
 *   Introduce lightweight inline reporting logic (One-liner).
 
+> **🚨 MANDATORY**: After applying instrumentation, you MUST re-output the Debug Server start command (with the actual sessionId filled in). This ensures the user always has the command visible, even if they scrolled past Step 3.
+
 > **💡 User Guidance**: After instrumentation, clearly explain to the user:
 > - Which files were modified and why
+> - The exact Debug Server start command to run in a terminal
 > - The instrumentation code uses the env file for configuration (no manual setup needed)
+> - For mobile/real device: the URL to use in device code (from server output or port forwarding)
 > - What to do if the env file cannot be read (fallback URL)
 
 Output: Instrumentation Diff

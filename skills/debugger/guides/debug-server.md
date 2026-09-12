@@ -69,7 +69,9 @@ Instrumentation code can read this file to auto-configure.
 | `Port occupied` loops | Kill process: `lsof -i :7777` then `kill <PID>` |
 | `python3: command not found` | Install Python 3.6+ |
 | Mobile can't connect | Use `--remote` mode |
-| No logs received | Verify URL matches server output |
+| Mobile can't connect (USB) | Set up port forwarding: `adb reverse tcp:7777 tcp:7777` (Android) or `iproxy 7777 7777` (iOS), then use `http://127.0.0.1:<port>/event` in device code |
+| Auto-detected IP is wrong | Check the list of detected IPs printed by the server and use the correct one manually |
+| No logs received | Verify URL matches server output; ensure device and host are on same network (WiFi) or port forwarding is set up (USB) |
 
 ### Fallback
 

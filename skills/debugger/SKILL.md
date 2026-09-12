@@ -78,10 +78,11 @@ Debug using the **Scientific Method**: First propose multiple falsifiable hypoth
 
 1.  **3–5 Falsifiable Hypotheses**: Each hypothesis should correspond to a specific observation point.
 2.  **Change Summary & Operational Suggestions**: After each instrumentation or fix, clearly explain the changes to the user and provide a specific operational path (Cheatsheet/Checklist).
-3.  **Evidence-Based Analysis Report**: Reference specific log lines to determine the confirmed/rejected status of each hypothesis.
-4.  **Fix Solution & Comparative Conclusion**: Provide a minimal fix Patch and show a comparative proof between `pre-fix` and `post-fix` logs.
-5.  **Interactive Confirmation Guidance**: Explicitly invite user verification and feedback at key milestones.
-6.  **Cleanup Summary**: Automatically clean up all debugging artifacts after confirming the fix and produce a summary of the root cause.
+3.  **🚨 Debug Server Start Command**: After instrumentation (Step 4), **MUST output the exact `python3` command** for the user to start the Debug Server. Include the actual `sessionId` value, not a placeholder. This is NOT optional — without it, the user has no way to collect logs.
+4.  **Evidence-Based Analysis Report**: Reference specific log lines to determine the confirmed/rejected status of each hypothesis.
+5.  **Fix Solution & Comparative Conclusion**: Provide a minimal fix Patch and show a comparative proof between `pre-fix` and `post-fix` logs.
+6.  **Interactive Confirmation Guidance**: Explicitly invite user verification and feedback at key milestones.
+7.  **Cleanup Summary**: Automatically clean up all debugging artifacts after confirming the fix and produce a summary of the root cause.
 
 ---
 
@@ -90,7 +91,7 @@ Debug using the **Scientific Method**: First propose multiple falsifiable hypoth
 To implement the "Evidence-Driven" core philosophy, the Assistant must follow this sequence of actions when handling bugs:
 
 1.  **Observe & Hypothesize**: Before seeing logs, modifying any business code is strictly prohibited. You must first list 3–5 possible causes (hypotheses).
-2.  **Instrument & Collect**: The first code modification must be adding instrumentation logs. The purpose is to confirm or falsify the aforementioned hypotheses.
+2.  **Instrument & Collect**: The first code modification must be adding instrumentation logs. **MUST also output the Debug Server start command for the user.** The purpose is to confirm or falsify the aforementioned hypotheses.
 3.  **Determine by Evidence**: Read and analyze logs to determine which hypothesis holds true based on evidence (specific log outputs, stack traces, variable states).
 4.  **Minimal Fix**: Implement a minimal scope fix only after evidence clearly points to the root cause.
 5.  **Verify & Compare**: After the fix, run again and compare `pre-fix` vs. `post-fix` logs to prove the issue is resolved without introducing new ones.
@@ -122,6 +123,27 @@ This Skill mandates using `debug-<sessionId>.md` to sync progress. For detailed 
 - **Collapsible Regions**: Wrap all instrumentation in `#region debug-point <id>` blocks
 - **Minimal Intrusion**: No new util files in business codebase; use inline one-liners
 - **Closed-Loop Handover**: After instrumentation or fix, provide clear user guidance and yield turn
+
+### 🚨 Debug Server Start Command (MANDATORY after instrumentation)
+
+**Every time instrumentation is applied (Step 4), you MUST output the exact Debug Server start command in the conversation. This is NOT optional.**
+
+- **Local debugging** (browser / Node.js / local process):
+  ```bash
+  python3 tools/debug-server/python/debug-server.py --session <sessionId> --outdir .dbg --clean --idle 1200
+  ```
+
+- **Real device / mobile debugging** (iOS / Android / remote browser):
+  ```bash
+  python3 tools/debug-server/python/debug-server.py --remote --session <sessionId> --outdir .dbg --clean --idle 1200
+  ```
+
+> **⚠️ For real device debugging over USB**, the device cannot reach the host IP directly. The user must also set up port forwarding:
+> - **iOS**: `iproxy <device_port> <host_port>` (e.g., `iproxy 7777 7777`), then use `http://127.0.0.1:7777/event` in device code
+> - **Android**: `adb reverse tcp:<host_port> tcp:<host_port>` (e.g., `adb reverse tcp:7777 tcp:7777`), then use `http://127.0.0.1:7777/event` in device code
+> - **WiFi**: Use `--remote` and ensure device is on the same network. If the auto-detected IP is wrong, check the list of detected IPs printed by the server and pick the correct one.
+
+> **💡 The command must include the actual `<sessionId>` value (e.g., `login-500-error`), not a placeholder.**
 
 > **⚠️ Always provide an "Abort debugging" option** to allow users to exit at any checkpoint. When selected, clean up all artifacts and summarize progress.
 

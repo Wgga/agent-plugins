@@ -26,6 +26,28 @@ def get_local_ip():
     return IP
 
 
+def get_all_ips():
+    ips = set()
+    try:
+        for info in socket.getaddrinfo(socket.gethostname(), None):
+            addr = info[4][0]
+            if not addr.startswith("127.") and ":" not in addr:
+                ips.add(addr)
+    except Exception:
+        pass
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("10.255.255.255", 1))
+        ips.add(s.getsockname()[0])
+    except Exception:
+        pass
+    finally:
+        s.close()
+
+    return sorted(ips)
+
+
 def write_env_file(outdir, session_id, api_url):
     env_path = os.path.join(outdir, f"{session_id}.env")
     with open(env_path, "w", encoding="utf-8") as f:
@@ -134,7 +156,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             return
 
-        session_id = event.get("sessionId", "default")
+        session_id = self.server.session_id
         if "ts" not in event:
             event["ts"] = int(time.time() * 1000)
 
@@ -196,14 +218,21 @@ def main():
                 base_url = f"http://{display_host}:{current_port}"
                 api_url = f"{base_url}/event"
                 log_file = f"{abs_outdir}/debug-log-{args.session}.ndjson"
-                
+
                 env_file = write_env_file(abs_outdir, args.session, api_url)
-                
+
                 print(
                     f"[Debug Server] Listening on http://{display_host}:{current_port}"
                 )
+                if args.remote:
+                    all_ips = get_all_ips()
+                    if len(all_ips) > 1:
+                        print("[Debug Server] Detected IPs (use one reachable from your device):")
+                        for ip in all_ips:
+                            marker = " ← (auto-selected)" if ip == local_ip else ""
+                            print(f"  http://{ip}:{current_port}{marker}")
                 print("@@DEBUG_SERVER_INFO")
-                print(json.dumps({
+                server_info = {
                     "base_url": base_url,
                     "api_url": api_url,
                     "session_id": args.session,
@@ -216,7 +245,11 @@ def main():
                         "GET /logs": "Get all logs (supports ?last=N&hypothesisId=X&runId=Y)",
                         "DELETE /logs": "Clear all logs for this session"
                     }
-                }, indent=2))
+                }
+                if args.remote:
+                    server_info["all_ips"] = get_all_ips()
+                    server_info["auto_selected_ip"] = local_ip
+                print(json.dumps(server_info, indent=2))
                 print("@@END_DEBUG_SERVER_INFO")
 
                 while True:

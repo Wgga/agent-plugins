@@ -67,7 +67,8 @@ def write_env_file(outdir, session_id, api_url):
 
 def handle_post(request):
     event = json.parse(request.body)
-    session_id = event.get("sessionId", "default")
+    # Use server's session_id for file naming, NOT event.sessionId
+    session_id = server.session_id
     
     if "ts" not in event:
         event["ts"] = current_time_ms()
